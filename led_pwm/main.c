@@ -12,8 +12,13 @@ ISR(PCINT0_vect){
         return;
         }
 
-        _delay_ms(DELAY);
+        if(OCR1A == 0x00){
+            TCCR1A = (1 << COM1A1) | (1 << WGM10);
+            TCCR1B = (1 << WGM12) | (1 << CS10);
+        }
+
         OCR1A = OCR1A + 51;
+        _delay_ms(DELAY);        
         return;
     }
 
@@ -21,9 +26,14 @@ ISR(PCINT0_vect){
         if(OCR1A == 0x00){
         return;
         }
-        
-        _delay_ms(DELAY);
+
+        if(OCR1A == 51){
+            TCCR1A = 0;
+            TCCR1B = 0;
+        }
+
         OCR1A = OCR1A - 51;
+        _delay_ms(DELAY);
         return;
     }
 
