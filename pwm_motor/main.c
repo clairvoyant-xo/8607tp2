@@ -7,7 +7,7 @@
 volatile uint8_t velocidad;
 volatile uint8_t direccion;
 
-const uint8_t vel[3] = {205,210,255};
+const uint8_t vel[3] = {210,230,255};
 const uint8_t dir[3] = {0x04,0x60,0x00};
 
 ISR(PCINT2_vect){
@@ -61,7 +61,7 @@ ISR(PCINT2_vect){
 
 void init_irq_pin_change(void){
     PCICR = (1 << PCIE2);
-    PCMSK0 = (1 << PCINT16) | (1 << PCINT17);
+    PCMSK2 = (1 << PCINT16) | (1 << PCINT17);
 }
 
 void init_timer(uint8_t sentido){
@@ -109,8 +109,8 @@ void reset(void){
 }
 
 int main(void){
-    velocidad = 2;
-    direccion = 2;
+    velocidad = 0;
+    direccion = 0;
     reset();
     while(1){
     }
