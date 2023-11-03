@@ -64,8 +64,8 @@ void init_irq_pin_change(void){
     PCMSK2 = (1 << PCINT16) | (1 << PCINT17);
 }
 
-void init_timer(uint8_t sentido){
-    if(sentido == 0){
+void init_timer(void){
+    if(direccion == 0){
     TCCR0A = (1 << COM0A1) | (1 << COM0B1) | (1 << WGM01) | (1 << WGM00);
     TCCR0B = (1 << CS00);
     TCNT0 = 0; 
@@ -73,7 +73,7 @@ void init_timer(uint8_t sentido){
     OCR0B = vel[velocidad];
     }
 
-    if(sentido == 1){
+    if(direccion == 1){
     TCCR2A = (1 << COM2A1) | (1 << COM2B1) | (1 << WGM21) | (1 << WGM20);
     TCCR2B = (1 << CS20);
     TCNT2 = 0; 
@@ -82,9 +82,9 @@ void init_timer(uint8_t sentido){
     }
 }
 
-void init_shield(uint8_t sentido){
+void init_shield(void){
     for(uint8_t i = 0; i < 8; i++){
-        uint8_t aux = dir[sentido] >> i;              
+        uint8_t aux = dir[direccion] >> i;
         PORTB |= (aux & 0x01);
         PORTD |= 0x10;
         PORTD &= 0xEF; 
@@ -102,8 +102,8 @@ void init_pins(void){
 
 void reset(void){
     init_pins();
-    init_timer(direccion);    
-    init_shield(direccion);
+    init_timer();
+    init_shield();
     init_irq_pin_change();    
     sei();
 }
