@@ -20,14 +20,14 @@ ISR(PCINT2_vect){
 
         if(direccion == 0){
         OCR0A = vel[++velocidad];
-        OCR0B = vel[++velocidad];
+        OCR0B = vel[velocidad];
         _delay_ms(DELAY);        
         return;
         }
 
         if(direccion == 1){
         OCR2A = vel[++velocidad];
-        OCR2B = vel[++velocidad];
+        OCR2B = vel[velocidad];
         _delay_ms(DELAY);        
         return;
         }
@@ -42,14 +42,14 @@ ISR(PCINT2_vect){
 
         if(direccion == 0){
         OCR0A = vel[--velocidad];
-        OCR0B = vel[--velocidad];
+        OCR0B = vel[velocidad];
         _delay_ms(DELAY);        
         return;
         }
 
         if(direccion == 1){
         OCR2A = vel[--velocidad];
-        OCR2B = vel[--velocidad];
+        OCR2B = vel[velocidad];
         _delay_ms(DELAY);        
         return;
         }
