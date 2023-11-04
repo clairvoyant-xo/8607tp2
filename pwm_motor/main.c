@@ -5,10 +5,10 @@
 #define DELAY 200
 
 volatile uint8_t velocidad;
-volatile uint8_t direccion;
+volatile uint8_t sentido;
 
-const uint8_t vel[3] = {210,230,255};
-const uint8_t dir[3] = {0x04,0x60,0x00};
+const uint8_t vel[3] = {0,210,255};
+const uint8_t sent[3] = {0x00,0x84,0x03};
 
 ISR(PCINT2_vect){
     uint8_t estado = PIND;
@@ -18,20 +18,9 @@ ISR(PCINT2_vect){
         return;
         }
 
-        if(direccion == 0){
         OCR0A = vel[++velocidad];
         OCR0B = vel[velocidad];
         _delay_ms(DELAY);        
-        return;
-        }
-
-        if(direccion == 1){
-        OCR2A = vel[++velocidad];
-        OCR2B = vel[velocidad];
-        _delay_ms(DELAY);        
-        return;
-        }
-
         return;
     }
 
@@ -40,20 +29,9 @@ ISR(PCINT2_vect){
         return;
         }
 
-        if(direccion == 0){
         OCR0A = vel[--velocidad];
         OCR0B = vel[velocidad];
         _delay_ms(DELAY);        
-        return;
-        }
-
-        if(direccion == 1){
-        OCR2A = vel[--velocidad];
-        OCR2B = vel[velocidad];
-        _delay_ms(DELAY);        
-        return;
-        }
-
         return;
     }
 
@@ -65,37 +43,30 @@ void init_irq_pin_change(void){
 }
 
 void init_timer(void){
-    if(direccion == 0){
     TCCR0A = (1 << COM0A1) | (1 << COM0B1) | (1 << WGM01) | (1 << WGM00);
     TCCR0B = (1 << CS00);
     TCNT0 = 0; 
     OCR0A = vel[velocidad];
     OCR0B = vel[velocidad];
-    }
-
-    if(direccion == 1){
-    TCCR2A = (1 << COM2A1) | (1 << COM2B1) | (1 << WGM21) | (1 << WGM20);
-    TCCR2B = (1 << CS20);
-    TCNT2 = 0; 
-    OCR2A = vel[velocidad];
-    OCR2B = vel[velocidad];
-    }
 }
 
 void init_shield(void){
+    PORTB &= 0xEF;
     for(uint8_t i = 0; i < 8; i++){
-        uint8_t aux = dir[direccion] >> i;
-        PORTB |= (aux & 0x01);
+        PORTD &= 0xEF;
+        if((sent[sentido] & (1 << i)) == 0){
+            PORTB &= 0xFE;
+        } else{
+            PORTB |= 0x01;            
+        }
         PORTD |= 0x10;
-        PORTD &= 0xEF; 
     }
     PORTB |= 0x10;
-    PORTB &= 0xEF;
 }
 
 void init_pins(void){
-    DDRB = 0x5F;
-    DDRD = 0xF8;
+    DDRB = 0x11;
+    DDRD = 0xF0;
     PORTB = 0x00;
     PORTD = 0x03;
 }
@@ -110,7 +81,7 @@ void reset(void){
 
 int main(void){
     velocidad = 0;
-    direccion = 0;
+    sentido = 0;
     reset();
     while(1){
     }
